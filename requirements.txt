@@ -1,0 +1,9 @@
+pandas>=2.0
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+vaderSentiment>=3.3.2
+matplotlib>=3.7
+dbt-postgres>=1.10
+# Optional: run everything locally without Docker
+dbt-duckdb>=1.10
+duckdb-engine>=0.13

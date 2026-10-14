@@ -1,0 +1,42 @@
+# PostgreSQL warehouse + Airflow (standalone mode, for local development)
+# Start:  docker compose -f docker/docker-compose.yml up -d
+# Airflow UI: http://localhost:8080  (login: admin / password printed in the airflow logs)
+
+services:
+  warehouse:
+    image: postgres:16
+    container_name: sephora_warehouse
+    environment:
+      POSTGRES_USER: sephora
+      POSTGRES_PASSWORD: sephora
+      POSTGRES_DB: sephora
+    ports:
+      - "5432:5432"
+    volumes:
+      - warehouse_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sephora"]
+      interval: 10s
+      retries: 5
+
+  airflow:
+    image: apache/airflow:2.10.5-python3.11
+    container_name: sephora_airflow
+    command: standalone
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      WAREHOUSE_URL: postgresql+psycopg2://sephora:sephora@warehouse:5432/sephora
+      PG_HOST: warehouse
+      DATA_DIR: /opt/airflow/project/data
+      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-postgres==1.10.* vaderSentiment==3.3.2 psycopg2-binary"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ..:/opt/airflow/project
+
+volumes:
+  warehouse_data:

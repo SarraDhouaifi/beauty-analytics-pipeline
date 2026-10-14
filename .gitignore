@@ -1,0 +1,12 @@
+data/*
+!data/.gitkeep
+*.duckdb
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+logs/
+dashboard/exports/
+__pycache__/
+dbt/.user.yml
+.venv/
+*.duckdb.wal

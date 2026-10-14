@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Tables loaded by src/extract_load.py and src/sentiment.py
+    tables:
+      - name: products
+      - name: reviews
+      - name: review_sentiment

@@ -1,0 +1,18 @@
+# Copy to ~/.dbt/profiles.yml or run dbt with --profiles-dir .
+sephora:
+  target: postgres
+  outputs:
+    postgres:
+      type: postgres
+      host: "{{ env_var('PG_HOST', 'localhost') }}"
+      port: 5432
+      user: sephora
+      password: sephora
+      dbname: sephora
+      schema: public
+      threads: 4
+    # Quick local test without Docker (pip install dbt-duckdb)
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '../sephora.duckdb') }}"
+      threads: 4
