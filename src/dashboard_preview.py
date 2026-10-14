@@ -13,6 +13,7 @@ from config import ROOT, get_engine
 
 FIG = ROOT / "dashboard" / "preview"
 BLUE, ORANGE, GREY = "#2f5d8a", "#c4572a", "#9db4cf"
+MIN_REVIEWS = 500   # brand rankings ignore brands with too few reviews to be reliable
 
 
 def main() -> None:
@@ -74,18 +75,19 @@ def main() -> None:
     plt.close(fig)
 
     # Insights computed from the data
-    best = brands[brands["reviews"] >= brands["reviews"].median()].nlargest(1, "recommendation_rate").iloc[0]
-    worst = brands[brands["reviews"] >= brands["reviews"].median()].nlargest(1, "negative_share").iloc[0]
+    reviewed = brands[brands["reviews"] >= MIN_REVIEWS]
+    best = reviewed.nlargest(1, "recommendation_rate").iloc[0]
+    worst = reviewed.nlargest(1, "negative_share").iloc[0]
     top_cat = cats.groupby("primary_category")["total_loves"].sum().idxmax()
     hidden = products[(products["avg_sentiment"] > products["avg_sentiment"].quantile(0.9))
                       & (products["loves_count"] < products["loves_count"].median())]
     lines = [
         "# Dashboard insights", "",
         f"- **{top_cat}** is the most loved category ({cats.groupby('primary_category')['total_loves'].sum().max():,.0f} loves).",
-        f"- **{best['brand_name']}** has the highest recommendation rate among well-reviewed brands "
+        f"- **{best['brand_name']}** has the highest recommendation rate among brands with {MIN_REVIEWS}+ reviews "
         f"({best['recommendation_rate']:.0%}).",
-        f"- **{worst['brand_name']}** has the highest share of negative reviews ({worst['negative_share']:.0%}): "
-        "investigate product quality and the claims in its descriptions.",
+        f"- **{worst['brand_name']}** has the highest share of negative reviews among brands with {MIN_REVIEWS}+ reviews "
+        f"({worst['negative_share']:.0%}): investigate product quality and the claims in its descriptions.",
         f"- **{len(hidden)} hidden gems**: products in the top 10% for sentiment but below median popularity – "
         "candidates for visibility campaigns.",
     ]

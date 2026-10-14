@@ -24,12 +24,12 @@ Orchestration: Apache Airflow, weekly – extract_load → sentiment → dbt run
 
 ## Results
 
-> Run the pipeline on the real dataset, then replace this block with the numbers from `dashboard/insights.md` and your Power BI screenshots.
-
-- _X_ products, _X_ reviews processed
-- **_Category_** is the most loved category
-- **_Brand_** has the highest recommendation rate; **_Brand_** the highest share of negative reviews
-- _X_ "hidden gems": top 10% sentiment but below-median popularity
+- **8,494 products** and **1,094,182 reviews** processed
+- Review sentiment (VADER): **90.5% positive** (990,434), **7.4% negative** (80,767), **2.1% neutral** (22,981)
+- Data quality: **22/22 dbt tests passed**
+- **Makeup** is the most loved category (128,483,886 loves)
+- Among brands with 500+ reviews, **MARA** has the highest recommendation rate (98%) and **Topicals** the highest share of negative reviews (24%)
+- **188 "hidden gems"**: top 10% sentiment but below-median popularity – candidates for visibility campaigns
 
 ![Brand positioning](dashboard/preview/brand_positioning.png)
 ![Category x price band](dashboard/preview/category_price_band.png)
